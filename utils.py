@@ -44,6 +44,9 @@ cv2.setNumThreads(0)
 cv2.ocl.setUseOpenCL(False)
 
 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+classes = ('plane', 'car', 'bird', 'cat',
+                   'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 class Draw:
     def plotings(image_set):
         images = image_set

@@ -4,21 +4,10 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import torch.backends.cudnn as cudnn
-
-import torchvision
-import torchvision.transforms as transforms
-
 import os
-import argparse
-
+from tqdm import tqdm
 from models import *
-from utils import  loader
 
-# parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
-# parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
-# parser.add_argument('--resume', '-r', action='store_true',
-#                     help='resume from checkpoint')
-# args = parser.parse_args()
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 best_acc = 0  # best test accuracy
@@ -26,37 +15,23 @@ start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
 # Data
 print('==> Preparing data..')
-trainloader,testloader = loader.load_data()
-classes = ('plane', 'car', 'bird', 'cat', 'deer',
-           'dog', 'frog', 'horse', 'ship', 'truck')
+classes = ('plane', 'car', 'bird', 'cat', 'deer','dog', 'frog', 'horse', 'ship', 'truck')
 
 # Model
 print('==> Building model..')
-net = ResNet18()
+model = ResNet18()
 
-net = net.to(device)
+model = model.to(device)
 if device == 'cuda':
-    net = torch.nn.DataParallel(net)
+    model = torch.nn.DataParallel(model)
     cudnn.benchmark = True
 
-# if args.resume:
-#     # Load checkpoint.
-#     print('==> Resuming from checkpoint..')
-#     assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
-#     checkpoint = torch.load('./checkpoint/ckpt.pth')
-#     net.load_state_dict(checkpoint['net'])
-#     best_acc = checkpoint['acc']
-#     start_epoch = checkpoint['epoch']
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.01,momentum=0.9, weight_decay=5e-4)
-scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
-
+optimizer = optim.SGD(model.parameters(), lr=0.01,momentum=0.9, weight_decay=5e-4)
 
 # Training
 print("==> Its Training!")
-
-from tqdm import tqdm
 
 train_losses = []
 test_losses = []
@@ -65,11 +40,17 @@ test_acc = []
 
 
 class Performance:
-    def __init__(self):
+    def __init__(self,resume=False):
+        self.resume = resume
+        if self.resume:
+            print('==> Resuming from checkpoint..')
+            assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
+            checkpoint = torch.load('./checkpoint/ckpt.pth')
+            model.load_state_dict(checkpoint['model'])
+            best_acc = checkpoint['acc']
+            start_epoch = checkpoint['epoch']
 
-        self.test_loss = 0
-
-    def train(self, model, device, train_loader, optimizer, epoch):
+    def train(self, device, train_loader, optimizer, epoch):
         model.train()
         pbar = tqdm(train_loader)
         correct = 0
@@ -103,7 +84,7 @@ class Performance:
                 desc=f'Loss={loss.item()} Batch_id={batch_idx} train-Accuracy={100 * correct / processed:0.2f}')
             train_acc.append(100 * correct / processed)
 
-    def test(self, model, device, test_loader):
+    def test(self, device, test_loader,epoch):
         global best_acc
         model.eval()
         self.test_loss = 0
@@ -124,17 +105,17 @@ class Performance:
             100. * correct / len(test_loader.dataset)))
 
         acc = 100. * correct / len(test_loader.dataset)
-        # if acc > best_acc:
-        #     print('Saving..')
-        #     state = {
-        #         'net': net.state_dict(),
-        #         'acc': acc,
-        #         'epoch': epoch,
-        #     }
-        #     if not os.path.isdir('checkpoint'):
-        #         os.mkdir('checkpoint')
-        #     torch.save(state, './checkpoint/ckpt.pth')
-        #     best_acc = acc
+        if acc > best_acc:
+            print('Saving..')
+            state = {
+                'model': model.state_dict(),
+                'acc': acc,
+                'epoch': epoch,
+            }
+            if not os.path.isdir('checkpoint'):
+                os.mkdir('checkpoint')
+            torch.save(state, './checkpoint/ckpt.pth')
+            best_acc = acc
 
         test_acc.append(acc)
 

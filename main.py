@@ -14,11 +14,11 @@ import argparse
 from models import *
 from utils import  loader
 
-parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
-parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
-parser.add_argument('--resume', '-r', action='store_true',
-                    help='resume from checkpoint')
-args = parser.parse_args()
+# parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
+# parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
+# parser.add_argument('--resume', '-r', action='store_true',
+#                     help='resume from checkpoint')
+# args = parser.parse_args()
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 best_acc = 0  # best test accuracy
@@ -27,7 +27,6 @@ start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 # Data
 print('==> Preparing data..')
 trainloader,testloader = loader.load_data()
-
 classes = ('plane', 'car', 'bird', 'cat', 'deer',
            'dog', 'frog', 'horse', 'ship', 'truck')
 
@@ -40,14 +39,14 @@ if device == 'cuda':
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = True
 
-if args.resume:
-    # Load checkpoint.
-    print('==> Resuming from checkpoint..')
-    assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
-    checkpoint = torch.load('./checkpoint/ckpt.pth')
-    net.load_state_dict(checkpoint['net'])
-    best_acc = checkpoint['acc']
-    start_epoch = checkpoint['epoch']
+# if args.resume:
+#     # Load checkpoint.
+#     print('==> Resuming from checkpoint..')
+#     assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
+#     checkpoint = torch.load('./checkpoint/ckpt.pth')
+#     net.load_state_dict(checkpoint['net'])
+#     best_acc = checkpoint['acc']
+#     start_epoch = checkpoint['epoch']
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=args.lr,momentum=0.9, weight_decay=5e-4)
@@ -125,17 +124,17 @@ class Performance:
             100. * correct / len(test_loader.dataset)))
 
         acc = 100. * correct / len(test_loader.dataset)
-        if acc > best_acc:
-            print('Saving..')
-            state = {
-                'net': net.state_dict(),
-                'acc': acc,
-                'epoch': epoch,
-            }
-            if not os.path.isdir('checkpoint'):
-                os.mkdir('checkpoint')
-            torch.save(state, './checkpoint/ckpt.pth')
-            best_acc = acc
+        # if acc > best_acc:
+        #     print('Saving..')
+        #     state = {
+        #         'net': net.state_dict(),
+        #         'acc': acc,
+        #         'epoch': epoch,
+        #     }
+        #     if not os.path.isdir('checkpoint'):
+        #         os.mkdir('checkpoint')
+        #     torch.save(state, './checkpoint/ckpt.pth')
+        #     best_acc = acc
 
         test_acc.append(acc)
 

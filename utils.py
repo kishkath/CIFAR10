@@ -122,6 +122,9 @@ class class_accuracy:
 
 #  Plots of training & test curves, Plots of Mis-classified Images, Plots of GRADCAM images.
 
+storing_images = []
+storing_predicted_labels = []
+storing_target_labels = []
 class Plot_curves:
     def __init__(self):
         pass
@@ -138,13 +141,9 @@ class Plot_curves:
         axs[1, 1].set_title("Test Accuracy")
         return axs
 
-    def mis_classified(model,test_loader,images_needed=None):
+    def mis_classified(model,testloader,images_needed=None):
         if images_needed==None:
             images_needed = random.choice([10,20])
-
-        storing_images = []
-        storing_predicted_labels = []
-        storing_target_labels = []
         with torch.no_grad():
             model.eval()
             for data, target in testloader:
@@ -207,4 +206,16 @@ class Plot_curves:
             images.extend([torch_img.cpu(), heatmap, heatmap_pp, result, result_pp])
 
         grid_image = make_grid(images, nrow=6)
-        return transforms.ToPILImage()(grid_image)
+        figure2 = plt.figure(figsize=(16, 32))
+        for i in range(20):
+            sub = figure2.add_subplot(20, 1, i + 1)
+            p = Plot_curves.plotting_gradcam(transforms.ToPILImage()(storing_images[i]))
+            sub.imshow(p)
+            sub.set_title(
+                f"Predicted as: {classes[storing_predicted_labels[i]]} \n But, Actual is: {classes[storing_target_labels[i]]}")
+        plt.tight_layout()
+        plt.show()
+        return plt
+
+def mis_prediction():
+    return storing_images, storing_predicted_labels, storing_target_labels

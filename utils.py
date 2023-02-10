@@ -209,12 +209,12 @@ class Plot_curves:
             images.extend([torch_img.cpu(), heatmap, heatmap_pp, result, result_pp])
 
         grid_image = make_grid(images, nrow=6)
-        transforms.ToPILImage()(grid_image)
+        return transforms.ToPILImage()(grid_image)
 
-def plotting_gradCams(imagesneeded=12):
+def plotting_gradCams(imagesneeded):
         figure2 = plt.figure(figsize=(16, 32))
         for i in range(imagesneeded):
-            sub = figure2.add_subplot(20, 1, i + 1)
+            sub = figure2.add_subplot(imagesneeded, 1, i + 1)
             p = Plot_curves.plotting_gradcam(transforms.ToPILImage()(storing_images[i]))
             sub.imshow(p)
             sub.set_title(

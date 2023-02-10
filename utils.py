@@ -5,37 +5,21 @@
 '''
 
 # DataLoading, classwise-accuracies, Plots of training & testing images, Plots of training & test curves, Plots of Mis-classified Images, Plots of GRADCAM images.
-import os
-import sys
-import time
 import cv2
-import math
 import random
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 import torch
 import torchvision
-
-import torch.nn as nn
 import torch.optim
-import torch.nn.init as init
 import torchvision.transforms as transforms
-# from model import Net
-
-from tqdm import tqdm
-import torch.backends.cudnn as cudnn
-from torch.utils.data import Dataset, DataLoader
 
 import torch.optim
 import albumentations as A
-from albumentations.pytorch import ToTensorV2
-from albumentations import Normalize
 
 from gradcam.utils import visualize_cam
 from gradcam import GradCAM, GradCAMpp
-from PIL import Image
 import torchvision.models as models
 from torchvision.utils import make_grid, save_image
 
@@ -55,7 +39,6 @@ class Draw:
                    'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
         img = img / 2 + 0.5  # unnormalize
         npimg = img.numpy()
-        print(len(image_set), "images are plotted")
         plt.imshow(np.transpose(npimg, (1, 2, 0)))
 
 
@@ -78,12 +61,12 @@ class args():
         self.use_cuda = use_cuda
         self.kwargs = {'num_workers': 1, 'pin_memory': True} if self.use_cuda else {}
 
-
 class loader:
     def load_data():
         train_transforms = A.Compose([
+            A.pytorch.RandomCrop(size=[32, 32], padding=4),
             A.CoarseDropout(max_holes=1, max_height=16, max_width=16, min_holes=1, min_height=16, min_width=16,
-                            fill_value=0.4734, p=round(random.uniform(0.35, 0.52), 2)),
+                            fill_value=0.4734, p=round(random.uniform(0.35, 0.62), 2)),
             A.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)),
             A.pytorch.ToTensorV2()])
 
@@ -190,7 +173,7 @@ class Plot_curves:
 
         normed_torch_img = transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])(torch_img)[None]
         configs = [
-            dict(model_type='resnet', arch=resnet, layer_name='layer4')]
+            dict(model_type='resnet', arch=resnet, layer_name='layer2')]
 
         for config in configs:
             config['arch'].to(device).eval()

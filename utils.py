@@ -209,8 +209,11 @@ class Plot_curves:
             images.extend([torch_img.cpu(), heatmap, heatmap_pp, result, result_pp])
 
         grid_image = make_grid(images, nrow=6)
+        transforms.ToPILImage()(grid_image)
+
+def plotting_gradCams(imagesneeded=12):
         figure2 = plt.figure(figsize=(16, 32))
-        for i in range(20):
+        for i in range(imagesneeded):
             sub = figure2.add_subplot(20, 1, i + 1)
             p = Plot_curves.plotting_gradcam(transforms.ToPILImage()(storing_images[i]))
             sub.imshow(p)
@@ -218,7 +221,6 @@ class Plot_curves:
                 f"Predicted as: {classes[storing_predicted_labels[i]]} \n But, Actual is: {classes[storing_target_labels[i]]}")
         plt.tight_layout()
         plt.show()
-        return plt
 
 def mis_prediction():
     return storing_images, storing_predicted_labels, storing_target_labels

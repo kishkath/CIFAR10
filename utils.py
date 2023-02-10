@@ -17,6 +17,8 @@ import torchvision.transforms as transforms
 
 import torch.optim
 import albumentations as A
+from albumentations.pytorch import ToTensorV2
+from albumentations import Normalize
 
 from gradcam.utils import visualize_cam
 from gradcam import GradCAM, GradCAMpp

@@ -24,8 +24,8 @@ The Repo contains the code for training CIFAR10 Classes data using PyTorch.
 * Currently, making the model learn and all other things are going to be happen by importing classes and methods from files. The reference for implementing this is at : EVA/Assignment7/Jupyter notebook.
 
 
-** Later this will happen: 
-😎 😎 😎
+**Later, implementation with CLI will be made** 😎 😎 😎
+
 ## Training with CLI 
 ```
 # Start training with: 

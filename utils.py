@@ -66,7 +66,7 @@ class args():
 class loader:
     def load_data():
         train_transforms = A.Compose([
-            A.transforms.Pad(4, fill=0, padding_mode='constant'),
+            A.PadIfNeeded (min_height=4, min_width=4, pad_height_divisor=8, pad_width_divisor=8,always_apply=False, p=0.32),
             A.RandomCrop (32,32, always_apply=False, p=0.63),
             A.CoarseDropout(max_holes=1, max_height=16, max_width=16, min_holes=1, min_height=16, min_width=16,
                             fill_value=0.4734, p=round(random.uniform(0.35, 0.62), 2)),

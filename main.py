@@ -18,9 +18,7 @@ print('==> Preparing data..')
 classes = ('plane', 'car', 'bird', 'cat', 'deer','dog', 'frog', 'horse', 'ship', 'truck')
 
 # Model
-print('==> Building model..')
-model = ResNet18()
-
+print('==> Getting model..')
 model = ResNet18().to(device)
 if device == 'cuda':
     model = torch.nn.DataParallel(model)
@@ -29,12 +27,10 @@ if device == 'cuda':
 
 # Training
 print("==> Its Training!")
-
 train_losses = []
 test_losses = []
 train_acc = []
 test_acc = []
-
 
 class Performance:
     def __init__(self,resume=False):
@@ -74,7 +70,6 @@ class Performance:
             optimizer.step()
 
             # Update pbar-tqdm
-
             pred = y_pred.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
             correct += pred.eq(target.view_as(pred)).sum().item()
             processed += len(data)
@@ -115,7 +110,6 @@ class Performance:
                 os.mkdir('checkpoint')
             torch.save(state, './checkpoint/ckpt.pth')
             best_acc = acc
-
         test_acc.append(acc)
 
 def scores():

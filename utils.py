@@ -196,6 +196,7 @@ class Plot_curves:
         return transforms.ToPILImage()(grid_image)
 
 def plotting_gradCams(imagesneeded):
+         print("Diagnosis is happening for Layer2 of ResNet18. Lets go!")
         figure2 = plt.figure(figsize=(16, 32))
         for i in range(imagesneeded):
             sub = figure2.add_subplot(imagesneeded, 1, i + 1)

@@ -21,7 +21,7 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer','dog', 'frog', 'horse', 'ship',
 print('==> Building model..')
 model = ResNet18()
 
-model = model.to(device)
+model = ResNet18().to(device)
 if device == 'cuda':
     model = torch.nn.DataParallel(model)
     cudnn.benchmark = True
@@ -39,6 +39,7 @@ test_acc = []
 class Performance:
     def __init__(self,resume=False):
         self.resume = resume
+        self.test_loss = 0
         if self.resume:
             print('==> Resuming from checkpoint..')
             assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
@@ -68,8 +69,10 @@ class Performance:
             train_losses.append(loss)
 
             # Backpropagation
+
             loss.backward()
             optimizer.step()
+            print("Gradient Calculation: & Parameters update is Done")
 
             # Update pbar-tqdm
 

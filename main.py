@@ -27,8 +27,6 @@ if device == 'cuda':
     cudnn.benchmark = True
 
 
-criterion = nn.CrossEntropyLoss()
-
 # Training
 print("==> Its Training!")
 

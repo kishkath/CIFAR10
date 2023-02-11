@@ -47,7 +47,7 @@ class Performance:
             best_acc = checkpoint['acc']
             start_epoch = checkpoint['epoch']
 
-    def train(self, device, train_loader, optimizer, epoch):
+    def train(self, device, train_loader, optimizer, epoch,criterion):
         model.train()
         pbar = tqdm(train_loader)
         correct = 0
@@ -81,7 +81,7 @@ class Performance:
                 desc=f'Loss={loss.item()} Batch_id={batch_idx} train-Accuracy={100 * correct / processed:0.2f}')
             train_acc.append(100 * correct / processed)
 
-    def test(self, device, test_loader,epoch):
+    def test(self, device, test_loader,epoch,criterion):
         global best_acc
         model.eval()
         self.test_loss = 0

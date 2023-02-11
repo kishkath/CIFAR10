@@ -18,7 +18,7 @@ import torchvision.transforms as transforms
 import torch.optim
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
-from albumentations import Normalize
+from albumentations import Normalize,transforms
 
 from gradcam.utils import visualize_cam
 from gradcam import GradCAM, GradCAMpp
@@ -66,6 +66,8 @@ class args():
 class loader:
     def load_data():
         train_transforms = A.Compose([
+            A.transforms.Pad(4, fill=0, padding_mode='constant'),
+            A.RandomCrop (32,32, always_apply=False, p=0.63),
             A.CoarseDropout(max_holes=1, max_height=16, max_width=16, min_holes=1, min_height=16, min_width=16,
                             fill_value=0.4734, p=round(random.uniform(0.35, 0.62), 2)),
             A.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)),

@@ -198,16 +198,16 @@ class Plot_curves:
         return transforms.ToPILImage()(grid_image)
 
 def plotting_gradCams(imagesneeded):
-         print("Diagnosis is happening for Layer2 of ResNet18. Lets go!")
-        figure2 = plt.figure(figsize=(16, 32))
-        for i in range(imagesneeded):
-            sub = figure2.add_subplot(imagesneeded, 1, i + 1)
-            p = Plot_curves.plotting_gradcam(transforms.ToPILImage()(storing_images[i]))
-            sub.imshow(p)
-            sub.set_title(
-                f"Predicted as: {classes[storing_predicted_labels[i]]} \n But, Actual is: {classes[storing_target_labels[i]]}")
-        plt.tight_layout()
-        plt.show()
+    print("Diagnosis is happening for Layer2 of ResNet18. Lets go!")
+    figure2 = plt.figure(figsize=(16, 32))
+    for i in range(imagesneeded):
+        sub = figure2.add_subplot(imagesneeded, 1, i + 1)
+        p = Plot_curves.plotting_gradcam(transforms.ToPILImage()(storing_images[i]))
+        sub.imshow(p)
+        sub.set_title(
+            f"Predicted as: {classes[storing_predicted_labels[i]]} \n But, Actual is: {classes[storing_target_labels[i]]}")
+    plt.tight_layout()
+    plt.show()
 
 def mis_prediction():
     return storing_images, storing_predicted_labels, storing_target_labels

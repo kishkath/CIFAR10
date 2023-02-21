@@ -68,8 +68,7 @@ class Performance:
 
             loss.backward()
             optimizer.step()
-            if scheduler!=None:
-                scheduler.step()
+            
 
             # Update pbar-tqdm
             pred = y_pred.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
@@ -79,6 +78,8 @@ class Performance:
             pbar.set_description(
                 desc=f'Loss={loss.item()} Batch_id={batch_idx} train-Accuracy={100 * correct / processed:0.2f}')
             train_acc.append(100 * correct / processed)
+        if scheduler!=None:
+                scheduler.step() 
 
     def test(self, model,device, test_loader,epoch,criterion):
         global best_acc

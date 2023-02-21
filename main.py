@@ -44,7 +44,7 @@ class Performance:
             best_acc = checkpoint['acc']
             start_epoch = checkpoint['epoch']
 
-    def train(self, model,device, train_loader, optimizer, epoch,criterion):
+    def train(self, model,device, train_loader, optimizer, epoch,criterion,scheduler=None):
         model.train()
         pbar = tqdm(train_loader)
         correct = 0
@@ -68,6 +68,8 @@ class Performance:
 
             loss.backward()
             optimizer.step()
+            if scheduler!=None:
+                scheduler.step()
 
             # Update pbar-tqdm
             pred = y_pred.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
